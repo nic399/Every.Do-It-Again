@@ -17,6 +17,7 @@
 		01764D3A1FA11A38007EA7F5 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 01764D391FA11A38007EA7F5 /* main.m */; };
 		01764D431FA1226F007EA7F5 /* ToDoTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 01764D401FA1226F007EA7F5 /* ToDoTableViewCell.m */; };
 		01764D441FA1226F007EA7F5 /* ToDoTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 01764D421FA1226F007EA7F5 /* ToDoTableViewCell.xib */; };
+		01764D471FA12663007EA7F5 /* AddItemViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 01764D461FA12663007EA7F5 /* AddItemViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -36,6 +37,8 @@
 		01764D401FA1226F007EA7F5 /* ToDoTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ToDoTableViewCell.m; sourceTree = "<group>"; };
 		01764D411FA1226F007EA7F5 /* ToDoTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ToDoTableViewCell.h; sourceTree = "<group>"; };
 		01764D421FA1226F007EA7F5 /* ToDoTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ToDoTableViewCell.xib; sourceTree = "<group>"; };
+		01764D451FA12663007EA7F5 /* AddItemViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AddItemViewController.h; sourceTree = "<group>"; };
+		01764D461FA12663007EA7F5 /* AddItemViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AddItemViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -72,6 +75,8 @@
 				01764D251FA11A38007EA7F5 /* AppDelegate.m */,
 				01764D2A1FA11A38007EA7F5 /* MasterViewController.h */,
 				01764D2B1FA11A38007EA7F5 /* MasterViewController.m */,
+				01764D451FA12663007EA7F5 /* AddItemViewController.h */,
+				01764D461FA12663007EA7F5 /* AddItemViewController.m */,
 				01764D2D1FA11A38007EA7F5 /* DetailViewController.h */,
 				01764D2E1FA11A38007EA7F5 /* DetailViewController.m */,
 				01764D411FA1226F007EA7F5 /* ToDoTableViewCell.h */,
@@ -161,6 +166,7 @@
 			files = (
 				01764D3A1FA11A38007EA7F5 /* main.m in Sources */,
 				01764D291FA11A38007EA7F5 /* Every_Do_It_Again.xcdatamodeld in Sources */,
+				01764D471FA12663007EA7F5 /* AddItemViewController.m in Sources */,
 				01764D2C1FA11A38007EA7F5 /* MasterViewController.m in Sources */,
 				01764D431FA1226F007EA7F5 /* ToDoTableViewCell.m in Sources */,
 				01764D261FA11A38007EA7F5 /* AppDelegate.m in Sources */,

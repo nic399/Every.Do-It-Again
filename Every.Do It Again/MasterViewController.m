@@ -8,6 +8,7 @@
 
 #import "MasterViewController.h"
 #import "DetailViewController.h"
+#import "ToDoTableViewCell.h"
 
 @interface MasterViewController ()
 
@@ -17,12 +18,16 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
     // Do any additional setup after loading the view, typically from a nib.
+    [self.tableView registerNib:[UINib nibWithNibName:@"ToDoTableViewCell" bundle:nil] forCellReuseIdentifier:@"MyCell"];
+
     self.navigationItem.leftBarButtonItem = self.editButtonItem;
 
     UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(insertNewObject:)];
     self.navigationItem.rightBarButtonItem = addButton;
     self.detailViewController = (DetailViewController *)[[self.splitViewController.viewControllers lastObject] topViewController];
+    
 }
 
 
@@ -85,7 +90,7 @@
 
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"MyCell" forIndexPath:indexPath];
     ToDo *event = [self.fetchedResultsController objectAtIndexPath:indexPath];
     [self configureCell:cell withEvent:event];
     return cell;
@@ -115,7 +120,10 @@
 
 
 - (void)configureCell:(UITableViewCell *)cell withEvent:(ToDo *)toDo {
-    cell.textLabel.text = toDo.title;
+    ToDoTableViewCell *thisCell = (ToDoTableViewCell *) cell;
+    thisCell.titleLabel.text = toDo.title;
+    thisCell.descriptionLabel.text = toDo.todoDescription;
+    thisCell.priorityLabel.text = [NSString stringWithFormat:@"%d", toDo.priority];
 }
 
 
