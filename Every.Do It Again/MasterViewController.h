@@ -9,10 +9,11 @@
 #import <UIKit/UIKit.h>
 #import <CoreData/CoreData.h>
 #import "Every_Do_It_Again+CoreDataModel.h"
+#import "AddItemViewController.h"
 
 @class DetailViewController;
 
-@interface MasterViewController : UITableViewController <NSFetchedResultsControllerDelegate>
+@interface MasterViewController : UITableViewController <NSFetchedResultsControllerDelegate, AddToDoDelegate>
 
 @property (strong, nonatomic) DetailViewController *detailViewController;
 

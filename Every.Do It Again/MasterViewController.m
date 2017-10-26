@@ -9,6 +9,7 @@
 #import "MasterViewController.h"
 #import "DetailViewController.h"
 #import "ToDoTableViewCell.h"
+#import "AddItemViewController.h"
 
 @interface MasterViewController ()
 
@@ -21,15 +22,34 @@
     
     // Do any additional setup after loading the view, typically from a nib.
     [self.tableView registerNib:[UINib nibWithNibName:@"ToDoTableViewCell" bundle:nil] forCellReuseIdentifier:@"MyCell"];
-
+    
     self.navigationItem.leftBarButtonItem = self.editButtonItem;
-
+    
     UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(insertNewObject:)];
     self.navigationItem.rightBarButtonItem = addButton;
     self.detailViewController = (DetailViewController *)[[self.splitViewController.viewControllers lastObject] topViewController];
-    
+    self.tableView.allowsMultipleSelection = false;
 }
 
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    [self performSegueWithIdentifier:@"showDetail" sender:self];
+}
+
+-(void)addNewToDo:(ToDo *)input {
+    NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
+    ToDo *toDo = [[ToDo alloc] initWithContext:context];
+    toDo.title = input.title;
+    toDo.todoDescription = input.todoDescription;
+    toDo.priority = input.priority;
+    // Save the context.
+    NSError *error = nil;
+    if (![context save:&error]) {
+        // Replace this implementation with code to handle the error appropriately.
+        // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
+        NSLog(@"Unresolved error %@, %@", error, error.userInfo);
+        abort();
+    }
+}
 
 - (void)viewWillAppear:(BOOL)animated {
     self.clearsSelectionOnViewWillAppear = self.splitViewController.isCollapsed;
@@ -42,23 +62,8 @@
     // Dispose of any resources that can be recreated.
 }
 
-
 - (void)insertNewObject:(id)sender {
-    NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
-    ToDo *newEvent = [[ToDo alloc] initWithContext:context];
-    newEvent.title = @"New ToDo";
-    newEvent.todoDescription = @"ToDo description ToDo description ToDo description ToDo description ToDo description ToDo description ToDo description ToDo description ToDo description ToDo description ToDo description ToDo description ToDo description ToDo description ToDo description ToDo description ToDo description ToDo description ToDo description ToDo description ToDo description ToDo description ToDo description ToDo description ToDo description ToDo description ToDo description ToDo description ToDo description ToDo description ToDo description ToDo description ToDo description ";
-    // If appropriate, configure the new managed object.
-    //newEvent.timestamp = [NSDate date];
-        
-    // Save the context.
-    NSError *error = nil;
-    if (![context save:&error]) {
-        // Replace this implementation with code to handle the error appropriately.
-        // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-        NSLog(@"Unresolved error %@, %@", error, error.userInfo);
-        abort();
-    }
+    [self performSegueWithIdentifier:@"addItem" sender:self];
 }
 
 
@@ -72,6 +77,11 @@
         [controller setDetailItem:object];
         controller.navigationItem.leftBarButtonItem = self.splitViewController.displayModeButtonItem;
         controller.navigationItem.leftItemsSupplementBackButton = YES;
+    }
+    else if ([segue.identifier isEqualToString:@"addItem"]) {
+        AddItemViewController *destination = segue.destinationViewController;
+        destination.delegate = self;
+        destination.managedObjectContext = [self.fetchedResultsController managedObjectContext];
     }
 }
 
@@ -90,7 +100,7 @@
 
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"MyCell" forIndexPath:indexPath];
+    ToDoTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"MyCell" forIndexPath:indexPath];
     ToDo *event = [self.fetchedResultsController objectAtIndexPath:indexPath];
     [self configureCell:cell withEvent:event];
     return cell;
@@ -107,7 +117,7 @@
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
         [context deleteObject:[self.fetchedResultsController objectAtIndexPath:indexPath]];
-            
+        
         NSError *error = nil;
         if (![context save:&error]) {
             // Replace this implementation with code to handle the error appropriately.
@@ -118,12 +128,43 @@
     }
 }
 
+- (NSArray *)tableView:(UITableView *)tableView editActionsForRowAtIndexPath:(NSIndexPath *)indexPath {
+    UITableViewRowAction *completed = [UITableViewRowAction rowActionWithStyle:(UITableViewRowActionStyleDefault) title:@"Done" handler:^(UITableViewRowAction * _Nonnull action, NSIndexPath * _Nonnull indexPath) {
+        NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
+        ToDo *todo = [self.fetchedResultsController objectAtIndexPath:indexPath];
+        todo.isCompleted = !todo.isCompleted;
+        NSError *error = nil;
+        if (![context save:&error]) {
+            // Replace this implementation with code to handle the error appropriately.
+            // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
+            NSLog(@"Unresolved error %@, %@", error, error.userInfo);
+            abort();
+        }
+    }];
+    completed.backgroundColor = [UIColor greenColor];
+    
+    UITableViewRowAction *delete = [UITableViewRowAction rowActionWithStyle:(UITableViewRowActionStyleDestructive) title:@"Delete" handler:^(UITableViewRowAction * _Nonnull action, NSIndexPath * _Nonnull indexPath) {
+        //        [self.objects removeObjectAtIndex:indexPath.row];
+        //        [self.tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+        [self tableView:tableView commitEditingStyle:UITableViewCellEditingStyleDelete forRowAtIndexPath:indexPath];
+        
+    }];
+    
+    
+    return @[completed, delete];
+}
 
 - (void)configureCell:(UITableViewCell *)cell withEvent:(ToDo *)toDo {
     ToDoTableViewCell *thisCell = (ToDoTableViewCell *) cell;
     thisCell.titleLabel.text = toDo.title;
     thisCell.descriptionLabel.text = toDo.todoDescription;
     thisCell.priorityLabel.text = [NSString stringWithFormat:@"%d", toDo.priority];
+    if (toDo.isCompleted) {
+        thisCell.backgroundColor = [UIColor greenColor];
+    }
+    else {
+        thisCell.backgroundColor = [UIColor redColor];
+    }
 }
 
 
@@ -141,7 +182,7 @@
     
     // Edit the sort key as appropriate.
     NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"title" ascending:NO];
-
+    
     [fetchRequest setSortDescriptors:@[sortDescriptor]];
     
     // Edit the section name key path and cache name if appropriate.
@@ -211,12 +252,12 @@
 }
 
 /*
-// Implementing the above methods to update the table view in response to individual changes may have performance implications if a large number of changes are made simultaneously. If this proves to be an issue, you can instead just implement controllerDidChangeContent: which notifies the delegate that all section and object changes have been processed. 
+ // Implementing the above methods to update the table view in response to individual changes may have performance implications if a large number of changes are made simultaneously. If this proves to be an issue, you can instead just implement controllerDidChangeContent: which notifies the delegate that all section and object changes have been processed.
  
  - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
-    // In the simplest, most efficient, case, reload the table view.
-    [self.tableView reloadData];
-}
+ // In the simplest, most efficient, case, reload the table view.
+ [self.tableView reloadData];
+ }
  */
 
 @end

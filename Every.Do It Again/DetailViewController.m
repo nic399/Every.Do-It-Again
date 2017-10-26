@@ -9,6 +9,9 @@
 #import "DetailViewController.h"
 
 @interface DetailViewController ()
+@property (weak, nonatomic) IBOutlet UILabel *titleLabel;
+@property (weak, nonatomic) IBOutlet UILabel *priorityLabel;
+@property (weak, nonatomic) IBOutlet UILabel *completionLabel;
 
 @end
 
@@ -18,6 +21,16 @@
     // Update the user interface for the detail item.
     if (self.detailItem) {
         self.detailDescriptionLabel.text = self.detailItem.todoDescription;
+        self.titleLabel.text = self.detailItem.title;
+        self.priorityLabel.text = [NSString stringWithFormat:@"%d", self.detailItem.priority];
+        if (self.detailItem.isCompleted) {
+            self.completionLabel.text = @"Done";
+            self.completionLabel.textColor = [UIColor greenColor];
+        }
+        else {
+            self.completionLabel.text = @"Todo";
+            self.completionLabel.textColor = [UIColor redColor];
+        }
     }
 }
 
